@@ -3,6 +3,7 @@ from typing import List, Any, Union
 import sys
 import numpy as np
 from numpy.random import choice
+import json
 import pandas as pd
 
 
@@ -22,15 +23,15 @@ class NQueens:
     #    selects appropriate matched results from total population which ranks higher fitness score.
     #
 
-    def __init__(self,target, total_population, cross_over, mutation_rate):
-        #print("Constructor Calling of NQueens")
+    def __init__(self, target, total_population, cross_over, mutation_rate):
+        # print("Constructor Calling of NQueens")
         self.setup(target, total_population, cross_over, mutation_rate)
 
     # Function to initialize all parameters required for this genetic algorithm.
     # Function Setup is used to get the target string, total population, cross over and mutation rate parameters used.
 
     def setup(self, target, total_population, cross_over, mutation_rate):
-        print("Initializing Parameters...")
+        print("Initializing Parameters :: Target = %s" % target)
         self.target = target
         self.total_population = total_population
         self.cross_over = cross_over
@@ -52,8 +53,8 @@ class NQueens:
     def get_fitness_score(self, data):
         data = [elem for elem in data]
         fitnessScore1 = 0
-        for inloop in range(len(target)):
-            if int(data[inloop]) == int(target[inloop]):
+        for inloop in range(len(self.target)):
+            if int(data[inloop]) == int(self.target[inloop]):
                 fitnessScore1 = fitnessScore1 + 1
         return fitnessScore1
 
@@ -64,8 +65,8 @@ class NQueens:
         counter = len(self.target)
         i = 1
         board = [[0] * counter for _ in range(counter)]  # NxN matrix with all elements 0
-        for rows in range(len(target)):
-            for columns in range(len(target)):
+        for rows in range(len(self.target)):
+            for columns in range(len(self.target)):
                 try:
                     if columns == int(self.target[rows:i]):
                         board[rows][columns] = 1
@@ -148,7 +149,7 @@ class NQueens:
                 probabilityDist.append(fitnessData[outloop] / sum(fitnessData))
 
             prob_data_frame = pd.DataFrame({'Population_Array': self.populationData, 'FitnessScore': fitnessData,
-                                          'Probability_Distribution': probabilityDist})
+                                            'Probability_Distribution': probabilityDist})
             prob_data_frame = prob_data_frame.sort_values(['Probability_Distribution'], ascending=False)
             prob_data_frame = prob_data_frame.reset_index(drop=True)
             print('Generation ', loop, ' ', ' Average Fitness Score ', prob_data_frame["FitnessScore"].mean(), ' ',
@@ -156,20 +157,33 @@ class NQueens:
                   ''.join(elem for elem in str(child2)),
                   self.get_fitness_score(child2))
 
-
 mutation_rate = 0.7  # Mutation Rate to reproduce variation.
-total_population = 120  # Total Population
+total_population = 150  # Total Population
 cross_over = 0.5  # Cross over percentage
-target = "16470352"  # Target result
+#target = ""  # Target result
 generation_count = 1000  # Generation samples
 
 
 def main():
-    objNQueens = NQueens(target, total_population, cross_over, mutation_rate)
-    df = objNQueens.generate_population(target, total_population)
-    objNQueens.perform_variation(df, generation_count, cross_over, mutation_rate)
+    if len(sys.argv) < 2:
+        print("Input Arguments String/Variable Missing")
+        sys.exit()
+
+    json_string = sys.argv[1]
+
+    try:
+        #data = json.loads(str(json_string))
+        #NQueens.target = data['qconfig']
+
+        NQueens.target = sys.argv[1]
+
+        objNQueens = NQueens(NQueens.target, total_population, cross_over, mutation_rate)
+        df = objNQueens.generate_population(NQueens.target, total_population)
+        objNQueens.perform_variation(df, generation_count, cross_over, mutation_rate)
+
+    except json.JSONDecodeError:
+        print('Invalid JSON String format')
 
 
 if __name__ == "__main__":
     main()
-
