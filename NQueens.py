@@ -157,7 +157,7 @@ class NQueens:
                   ''.join(elem for elem in str(child2)),
                   self.get_fitness_score(child2))
 
-mutation_rate = 0.7  # Mutation Rate to reproduce variation.
+mutation_rate = 0.8  # Mutation Rate to reproduce variation.
 total_population = 150  # Total Population
 cross_over = 0.5  # Cross over percentage
 #target = ""  # Target result
@@ -169,13 +169,15 @@ def main():
         print("Input Arguments String/Variable Missing")
         sys.exit()
 
-    json_string = sys.argv[1]
+    #json_string = sys.argv[1]
 
     try:
         #data = json.loads(str(json_string))
         #NQueens.target = data['qconfig']
 
-        NQueens.target = sys.argv[1]
+        #print ("JSON String:%s" %json_string)
+
+        NQueens.target = sys.argv[1].strip('\"')
 
         objNQueens = NQueens(NQueens.target, total_population, cross_over, mutation_rate)
         df = objNQueens.generate_population(NQueens.target, total_population)
