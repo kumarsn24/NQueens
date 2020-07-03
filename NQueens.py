@@ -67,12 +67,12 @@ class NQueens:
         columns = 0
         board = [[0] * counter for _ in range(counter)]  # NxN matrix with all elements 0
         for rows in range(len(self.target)):
-                try:
-                    board[int(self.target[rows:columns+1]) - 1][columns] = 1
-                    columns = columns + 1
-                except Exception as exc:
-                    print("Unexpected error:", sys.exc_info()[0])
-                    raise
+            try:
+                board[int(self.target[rows:columns + 1]) - 1][columns] = 1
+                columns = columns + 1
+            except Exception as exc:
+                print("Unexpected error:", sys.exc_info()[0])
+                raise
 
         for values in board:
             print(values)
@@ -168,15 +168,32 @@ def main():
         print("Input Arguments String/Variable Missing")
         sys.exit()
 
-    # json_string = sys.argv[1]
-
     try:
-        # data = json.loads(str(json_string))
-        # NQueens.target = data['qconfig']
 
-        # print ("JSON String:%s" %json_string)
+        input_list = list(sys.argv[1:18])
+        input_str = str(input_list).replace('\"', "")
 
-        NQueens.target = sys.argv[1].strip('\"')
+        output_target = 0
+        element_position = 10000000
+
+        #
+        # Code is to convert the argument list into program acceptable format.
+        # Program converts argument list into string literal which is parsed in subsequent function.
+        #
+
+        for integer in range(0, len(input_str)):
+            if input_str[integer].isdigit():
+                output_target = output_target + (int(input_str[integer]) * element_position)
+                element_position = element_position / 10
+
+        pass_args=str(output_target)
+
+        NQueens.target = pass_args[0:8]
+
+        #
+        # Creating objNQueens object variable for NQueens class
+        # Calling methods to generate population and perform variation.
+        #
 
         objNQueens = NQueens(NQueens.target, total_population, cross_over, mutation_rate)
         df = objNQueens.generate_population(NQueens.target, total_population)
