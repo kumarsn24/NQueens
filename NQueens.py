@@ -31,13 +31,13 @@ class NQueens:
     # Function Setup is used to get the target string, total population, cross over and mutation rate parameters used.
 
     def setup(self, target, total_population, cross_over, mutation_rate):
-        print("Initializing Parameters :: Target = %s" % target)
+        print("Initializing Parameters :: Target = %s,%d" % (target, len(target)))
         self.target = target
         self.total_population = total_population
         self.cross_over = cross_over
         self.mutation_rate = mutation_rate
         self.secure_random = random.SystemRandom()
-        self.pos_list = [x for x in range(0, 8)]
+        self.pos_list = [x for x in range(0, 9)]
 
     # Function view element is used to display individual element under each data object.
     # For instance a[0]=[1,2,3,4]. Each element in data object will be printed using this method.
@@ -64,14 +64,12 @@ class NQueens:
     def print_solution(self):
         counter = len(self.target)
         i = 1
+        columns = 0
         board = [[0] * counter for _ in range(counter)]  # NxN matrix with all elements 0
         for rows in range(len(self.target)):
-            for columns in range(len(self.target)):
                 try:
-                    if columns == int(self.target[rows:i]):
-                        board[rows][columns] = 1
-                        i = i + 1
-                        break
+                    board[int(self.target[rows:columns+1]) - 1][columns] = 1
+                    columns = columns + 1
                 except Exception as exc:
                     print("Unexpected error:", sys.exc_info()[0])
                     raise
@@ -157,10 +155,11 @@ class NQueens:
                   ''.join(elem for elem in str(child2)),
                   self.get_fitness_score(child2))
 
-mutation_rate = 0.8  # Mutation Rate to reproduce variation.
-total_population = 150  # Total Population
+
+mutation_rate = 0.85  # Mutation Rate to reproduce variation.
+total_population = 300  # Total Population
 cross_over = 0.5  # Cross over percentage
-#target = ""  # Target result
+# target = "51863724"  # Target result
 generation_count = 1000  # Generation samples
 
 
@@ -169,13 +168,13 @@ def main():
         print("Input Arguments String/Variable Missing")
         sys.exit()
 
-    #json_string = sys.argv[1]
+    # json_string = sys.argv[1]
 
     try:
-        #data = json.loads(str(json_string))
-        #NQueens.target = data['qconfig']
+        # data = json.loads(str(json_string))
+        # NQueens.target = data['qconfig']
 
-        #print ("JSON String:%s" %json_string)
+        # print ("JSON String:%s" %json_string)
 
         NQueens.target = sys.argv[1].strip('\"')
 
